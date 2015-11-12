@@ -22,11 +22,11 @@
  end
  
  puts "#{Post.count}"
- Post.find_or_create_by(title: "Unique title", body: "Unique body")
+ p = Post.find_or_create_by(title: "Unique title", body: "Unique body")
  puts "#{Post.count}"
   
  puts "#{Comment.count}"
- Comment.find_or_create_by(body: "Unique body")
+ Comment.find_or_create_by(body: "Unique body", post: p)
  puts "#{Comment.count}" 
   
   
