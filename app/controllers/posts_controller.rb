@@ -1,7 +1,7 @@
  class PostsController < ApplicationController
   before_action :require_sign_in, except: :show
   before_action :authorize_user, except: [:show, :new, :create]
-  
+
    def show
      @post = Post.find(params[:id])
    end
@@ -43,8 +43,13 @@
    end
 
    def destroy
+     if current_user.moderator?
+       flash[:error] = "You must be an admin to do that."
+       redirect_to [post.topic, post]
+     end
+     
      @post = Post.find(params[:id])
-
+      
      if @post.destroy
        flash[:notice] = "\"#{@post.title}\" was deleted successfully."
        redirect_to @post.topic
@@ -63,9 +68,15 @@
  
    def authorize_user
      post = Post.find(params[:id])
+     action = params['action']
+     if (action == "destroy") && current_user.moderator?
+      flash[:error] = "You must be an admin to do that."
+      redirect_to [post.topic, post]
+     end
      unless current_user == post.user || current_user.admin?
        flash[:error] = "You must be an admin to do that."
        redirect_to [post.topic, post]
      end
    end
  end
+ 
