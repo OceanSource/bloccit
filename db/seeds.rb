@@ -1,7 +1,18 @@
- include RandomData
+include RandomData
+
+ # Create Users
+ 5.times do
+   user = User.create!(
+ # #3
+   name:     RandomData.random_name,
+   email:    RandomData.random_email,
+   password: RandomData.random_sentence
+   )
+ end
+ users = User.all
  
  # Create Topics
- 15.times do
+ 10.times do
    Topic.create!(
      name:         RandomData.random_sentence,
      description:  RandomData.random_paragraph
@@ -12,6 +23,7 @@
  # Create Posts
  50.times do
    Post.create!(
+     user:   users.sample,
      topic:  topics.sample,
      title:  RandomData.random_sentence,
      body:   RandomData.random_paragraph
@@ -34,9 +46,15 @@
  puts "#{Comment.count}"
  Comment.find_or_create_by(body: "Unique body")
  puts "#{Comment.count}" 
-  
+ 
+ user = User.first
+ user.update_attributes!(
+   email: 'oceansource@gmail.com', # replace this with your personal email
+   password: 'helloworld'
+ )
   
  puts "Seed finished"
+ puts "#{User.count} users created"
  puts "#{Topic.count} topics created"
  puts "#{Post.count} posts created"
  puts "#{Comment.count} comments created"
