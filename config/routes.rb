@@ -1,4 +1,8 @@
  Rails.application.routes.draw do
+  get 'ratings/new'
+
+  get 'ratings/create'
+
    resources :labels, only: [:show]
 
    resources :topics do
