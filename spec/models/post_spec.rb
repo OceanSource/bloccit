@@ -32,14 +32,14 @@
    end
    
   
-   describe "voting" do
-
-     before do
-       3.times { post.votes.create!(value: 1) }
-       2.times { post.votes.create!(value: -1) }
-       @up_votes = post.votes.where(value: 1).count
-       @down_votes = post.votes.where(value: -1).count
-     end
+     describe "voting" do
+      before do
+        3.times { post.votes.create!(value: 1) }
+        2.times { post.votes.create!(value: -1) }
+        @up_votes = post.votes.where(value: 1).count
+        @down_votes = post.votes.where(value: -1).count
+      end
+   
 
      describe "#up_votes" do
        it "counts the number of votes with value = 1" do
@@ -78,5 +78,21 @@
          expect(post.rank).to eq (old_rank - 1)
        end
      end
-   end 
- end
+    end
+     
+     describe  "#create_vote" do
+      it "sets the post up_votes to 1" do
+       expect(post.up_votes).to eq(1)
+      end
+      
+      it "calls #create_vote when a post is created" do
+       post = topic.posts.new(title: RandomData.random_sentence, body: RandomData.random_sentence, user: user)
+       expect(post).to receive(:create_vote)
+       post.save
+      end
+      
+      it "associates the votewiththe owner of the post" do
+       expect(post.votes.first.user).to eq(post.user)
+      end
+    end 
+  end
