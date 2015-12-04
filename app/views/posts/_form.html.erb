@@ -1,3 +1,8 @@
+ <h1>
+   <%= @post.title %> <%= render partial: "ratings/display", locals: { r: @post.rating } %><br>
+   <small>
+     submitted <%= time_ago_in_words(@post.created_at) %> ago by <%= @post.user.name %>
+   </small>
 <%= form_for [topic, post] do |f| %>
    <% if post.errors.any? %>
      <div class="alert alert-danger">
