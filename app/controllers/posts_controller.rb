@@ -38,6 +38,7 @@
      if @post.save
        @post.labels = Label.update_labels(params[:post][:labels])
       @post.rating = Rating.update_rating(params[:post][:rating])
+      @post.save
        flash[:notice] = "Post was updated."
       redirect_to [@post.topic, @post]
      else
