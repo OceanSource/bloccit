@@ -36,4 +36,8 @@ class Post < ActiveRecord::Base
      update_attribute(:rank, new_rank)
    end
    
+   def created_favorite
+       Favorite.create(post: self, user: self.user)
+       FavoriteMailer.new_post(self).deliver_now
+   end
 end
