@@ -38,8 +38,9 @@ class TopicsController < ApplicationController
      @topic.assign_attributes(topic_params)
  
      if @topic.save
-         @topic.labels = Label.update_labels(params[:topic][:labels])
-         @topic.rating = Rating.update_rating(params[:topic][:rating])
+        @topic.labels = Label.update_labels(params[:topic][:labels])
+        @topic.rating = Rating.update_rating(params[:topic][:rating])
+        @topic.save
         flash[:notice] = "Topic was updated."
        redirect_to @topic
      else

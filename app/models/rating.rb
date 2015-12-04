@@ -7,6 +7,8 @@ class Rating < ActiveRecord::Base
   before_save { self.severity ||= :pg }
 
   def self.update_rating(rating_string)
+    puts "here is the rating_string"
+    puts "#{rating_string}"
     Rating.find_or_create_by(severity: rating_string.to_i)
   end
 end
