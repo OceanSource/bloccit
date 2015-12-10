@@ -1,133 +1,155 @@
 require 'rails_helper'
-include RandomData
-
 
 RSpec.describe User, type: :model do
-    
   let(:user) { create(:user) }
-  
+
   it { should have_many(:posts)}
   it { should have_many(:comments) }
   it { should have_many(:votes) }
   it { should have_many(:favorites) }
-  
-   # Shoulda tests for name
-   it { should validate_presence_of(:name) }
-   it { should validate_length_of(:name).is_at_least(1) }
- 
-   # Shoulda tests for email
-   it { should validate_presence_of(:email) }
-   it { should validate_uniqueness_of(:email) }
-   it { should validate_length_of(:email).is_at_least(3) }
-   it { should allow_value("user@bloccit.com").for(:email) }
-   it { should_not allow_value("userbloccit.com").for(:email) }
- 
-   # Shoulda tests for password
-   it { should validate_presence_of(:password) }
-   it { should have_secure_password }
-   it { should validate_length_of(:password).is_at_least(6) }
- 
-   describe "attributes" do
-     it "should respond to name" do
-       expect(user).to respond_to(:name)
-     end
- 
-     it "should respond to email" do
-       expect(user).to respond_to(:email)
-     end
-   end
-   
-    describe "invalid user" do
-     let(:user_with_invalid_name) { build(:user, name: "") }
-     let(:user_with_invalid_email) { build(:user, email: "") }
-     let(:user_with_invalid_email_format) { build(:user, email: "invalid_format") }
+  # Shoulda tests for name
+  it { should validate_presence_of(:name) }
+  it { should validate_length_of(:name).is_at_least(1) }
 
-     it "should be an invalid user due to blank name" do
-       expect(user_with_invalid_name).to_not be_valid
-     end
- 
-     it "should be an invalid user due to blank email" do
-       expect(user_with_invalid_email).to_not be_valid
-     end
- 
-     it "should be an invalid user due to incorrectly formatted email address" do
-       expect(user_with_invalid_email_format).to_not be_valid
-     end
- 
+  # Shoulda tests for email
+  it { should validate_presence_of(:email) }
+  it { should validate_uniqueness_of(:email) }
+  it { should validate_length_of(:email).is_at_least(3) }
+  it { should allow_value("user@bloccit.com").for(:email) }
+  it { should_not allow_value("userbloccit.com").for(:email) }
 
-     it "should respond to role" do
-       expect(user).to respond_to(:role)
-     end
- 
+  # Shoulda tests for password
+  it { should validate_presence_of(:password) }
+  it { should have_secure_password }
+  it { should validate_length_of(:password).is_at_least(6) }
 
-     it "should respond to admin?" do
-       expect(user).to respond_to(:admin?)
-     end
- 
+  describe "attributes" do
 
-     it "should respond to member?" do
-       expect(user).to respond_to(:member?)
-     end
-   end
+    it "should respond to role" do
+      expect(user).to respond_to(:role)
+    end
 
-   describe "roles" do
+    it "should respond to admin?" do
+      expect(user).to respond_to(:admin?)
+    end
 
-     it "should be member by default" do
-       expect(user.role).to eql("member")
-     end
- 
+    it "should respond to member?" do
+      expect(user).to respond_to(:member?)
+    end
 
-     context "member user" do
-       it "should return true for #member?" do
-         expect(user.member?).to be_truthy
-       end
- 
-       it "should return false for #admin?" do
-         expect(user.admin?).to be_falsey
-       end
-     end
- 
+    it "should respond to name" do
+      expect(user).to respond_to(:name)
+    end
 
-     context "admin user" do
-       before do
-         user.admin!
-       end
- 
-       it "should return false for #member?" do
-         expect(user.member?).to be_falsey
-       end
- 
-       it "should return true for #admin?" do
-         expect(user.admin?).to be_truthy
-       end
-     end
+    it "should respond to email" do
+      expect(user).to respond_to(:email)
+    end
   end
+
+  describe "roles" do
+    it "should be member by default" do
+      expect(user.role).to eql("member")
+    end
+
+    context "member user" do
+      it "should return true for #member?" do
+        expect(user.member?).to be_truthy
+      end
+
+      it "should return false for #admin?" do
+        expect(user.admin?).to be_falsey
+      end
+    end
+
+    context "admin user" do
+      before do
+        user.admin!
+      end
+
+      it "should return false for #member?" do
+        expect(user.member?).to be_falsey
+      end
+
+      it "should return true for #admin?" do
+        expect(user.admin?).to be_truthy
+      end
+    end
+  end
+
+  describe "invalid user" do
+    let(:user_with_invalid_name) { build(:user, name: "") }
+    let(:user_with_invalid_email) { build(:user, email: "") }
+    let(:user_with_invalid_email_format) { build(:user, email: "invalid_format") }
+
+    it "should be an invalid user due to blank name" do
+      expect(user_with_invalid_name).to_not be_valid
+    end
+
+    it "should be an invalid user due to blank email" do
+      expect(user_with_invalid_email).to_not be_valid
+    end
+
+    it "should be an invalid user due to incorrectly formatted email address" do
+      expect(user_with_invalid_email_format).to_not be_valid
+    end
+  end
+
   describe "#favorite_for(post)" do
-     before do
-       topic = Topic.create!(name: RandomData.random_sentence, description: RandomData.random_paragraph)
-       @post = topic.posts.create!(title: RandomData.random_sentence, body: RandomData.random_paragraph, user: user)
-     end
- 
-     it "returns `nil` if the user has not favorited the post" do
+    before do
+      topic = Topic.create!(name: RandomData.random_sentence, description: RandomData.random_paragraph)
+      @post = topic.posts.create!(title: RandomData.random_sentence, body: RandomData.random_paragraph, user: user)
+    end
 
-       expect(user.favorite_for(@post)).to be_nil
-     end
- 
-     it "returns the appropriate favorite if it exists" do
+    it "returns `nil` if the user has not favorited the post" do
+      expect(user.favorite_for(@post)).to be_nil
+    end
 
-       favorite = user.favorites.where(post: @post).create
+    it "returns the appropriate favorite if it exists" do
+      favorite = user.favorites.where(post: @post).create
+      expect(user.favorite_for(@post)).to eq(favorite)
+    end
+  end
 
-       expect(user.favorite_for(@post)).to eq(favorite)
-     end
-   end
-   describe ".avatar_url" do
- 
-     let(:known_user) { create(:user, email: "blochead@bloc.io") }
- 
-     it "returns the proper Gravatar url for a known email entity" do
- 
-       expected_gravatar = "http://gravatar.com/avatar/bb6d1172212c180cfbdb7039129d7b03.png?s=48"
-       expect(known_user.avatar_url(48)).to eq(expected_gravatar)
-     end
-   end
- end
+  describe ".avatar_url" do
+    let(:known_user) { create(:user, email: "blochead@bloc.io") }
+    it "returns the proper Gravatar url for a known email entity" do
+      expected_gravatar = "http://gravatar.com/avatar/bb6d1172212c180cfbdb7039129d7b03.png?s=48"
+      expect(User.avatar_url(known_user, 48)).to eq(expected_gravatar)
+    end
+  end
+
+  describe "#has_posts" do
+    it "returns false if the user doesn't have associated posts" do
+      expect(user.has_posts?).to eq false
+    end
+
+    it "returns true if the user has associated posts" do
+      user.posts << build(:post, user: user)
+      expect(user.has_posts?).to eq true
+    end
+  end
+
+  describe "#has_comments" do
+    it "returns false if the user doesn't have associated comments" do
+      expect(user.has_comments?).to eq false
+    end
+
+    it "returns true if the user has associated comments" do
+      user.posts << build(:post, user: user)
+      user.posts.first.comments << build(:comment, user: user)
+      expect(user.has_comments?).to eq true
+    end
+  end
+
+  describe "#has_favorites" do
+    it "returns false if the user doesn't have associated favorites" do
+      expect(user.has_favorites?).to eq false
+    end
+
+    it "returns true if the user has associated favorites" do
+      post = build(:post, user: user)
+      user.favorites << Favorite.create!(post: post)
+      expect(user.has_favorites?).to eq true
+    end
+  end
+end
