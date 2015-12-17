@@ -34,3 +34,4 @@
  
   gem 'bootstrap-sass'
   gem 'bcrypt'
+  gem 'responders', '~> 2.0'
