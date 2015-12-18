@@ -31,6 +31,20 @@ class Api::V1::PostsController < Api::V1::BaseController
       render json: {error: "Post destroy failed", status: 400}, status: 400
     end
   end
+  
+  def create
+    @topic = Topic.find(params[:topic_id])
+    
+    @post = @current_user.posts.build(post_params)
+    
+    @post.topic = @topic
+    
+    if @post.save
+      render json: {message: "Post Created", status: 200}, status: 200
+    else
+      render json: {error: "Post create failed", status: 400}, status: 400
+    end
+  end
 
   private
 
